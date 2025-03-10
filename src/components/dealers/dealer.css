@@ -1,0 +1,5 @@
+.background-dealer {
+  background-image: url("../../../public/thumbnail.jpg");
+  background-size:cover;
+  height: 50vh;
+}

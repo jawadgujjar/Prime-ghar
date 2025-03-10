@@ -1,198 +1,203 @@
 /* Basic reset */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: Arial, sans-serif;
-  }
-  
-  /* Main container */
-  .landing-container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-  
-  /* Header */
-  .landing-header {
-    display: flex;
-    justify-content: space-between;
-    padding: 20px;
-    background-color: #333;
-    color: white;
-  }
-  
-  .landing-header .logo {
-    font-size: 24px;
-    font-weight: bold;
-  }
-  
-  .landing-header nav ul {
-    display: flex;
-    list-style: none;
-  }
-  
-  .landing-header nav ul li {
-    margin-left: 20px;
-  }
-  
-  .landing-header nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-  }
-  
-  .landing-header nav ul li a:hover {
-    text-decoration: underline;
-  }
-  
-  /* Hero Section */
-  .hero {
-    background: url('https://via.placeholder.com/1920x800') center/cover no-repeat;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 60vh;
-    color: white;
-    text-align: center;
-  }
-  
-  .hero-content {
-    text-align: center;
-    padding: 0 20px;
-  }
-  
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+/* Main container */
+.landing-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+.landing-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  background-color: #333;
+  color: white;
+}
+
+.landing-header .logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.landing-header nav ul {
+  display: flex;
+  list-style: none;
+}
+
+.landing-header nav ul li {
+  margin-left: 20px;
+}
+
+.landing-header nav ul li a {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.landing-header nav ul li a:hover {
+  text-decoration: underline;
+}
+
+/* Hero Section */
+.hero {
+  background: url("../../../public/background.jpg") center/cover no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  color: white;
+  text-align: center;
+}
+
+.hero-content {
+  text-align: center;
+  padding: 0 20px;
+}
+
+.hero-title {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.hero-description {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+.cta-button {
+  padding: 10px 20px;
+  background-color: #ff5733;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.cta-button:hover {
+  background-color: #c0392b;
+}
+
+/* Sections */
+.section {
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+}
+
+.property-list,
+.contractor-list {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.property-card,
+.contractor-card {
+  width: 250px;
+  background-color: #f4f4f4;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.property-card img,
+.contractor-card img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.card-title {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.card-description {
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Contact Section */
+.contact-section {
+  background-color: #f9f9f9;
+  padding: 50px 20px;
+}
+
+.contact-title {
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.contact-input,
+.contact-textarea {
+  width: 100%;
+  max-width: 500px;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.contact-textarea {
+  height: 150px;
+}
+
+footer {
+  background-color: #333;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  margin-top: auto;
+}
+
+.footer-text {
+  font-size: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
   .hero-title {
-    font-size: 3rem;
-    margin-bottom: 20px;
-  }
-  
-  .hero-description {
-    font-size: 1.2rem;
-    margin-bottom: 20px;
-  }
-  
-  .cta-button {
-    padding: 10px 20px;
-    background-color: #FF5733;
-    border: none;
-    color: white;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .cta-button:hover {
-    background-color: #C0392B;
-  }
-  
-  /* Sections */
-  .section {
-    padding: 50px 20px;
-    text-align: center;
-  }
-  
-  .section-title {
     font-size: 2.5rem;
-    margin-bottom: 30px;
   }
-  
-  .property-list, .contractor-list {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    flex-wrap: wrap;
-  }
-  
-  .property-card, .contractor-card {
-    width: 250px;
-    background-color: #f4f4f4;
-    border-radius: 10px;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .property-card img, .contractor-card img {
-    width: 100%;
-    border-radius: 8px;
-    margin-bottom: 15px;
-  }
-  
-  .card-title {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-  }
-  
-  .card-description {
-    font-size: 1rem;
-    color: #555;
-  }
-  
-  /* Contact Section */
-  .contact-section {
-    background-color: #f9f9f9;
-    padding: 50px 20px;
-  }
-  
-  .contact-title {
-    font-size: 2.5rem;
-    margin-bottom: 30px;
-  }
-  
-  .contact-form {
-    display: flex;
+
+  .property-list,
+  .contractor-list {
     flex-direction: column;
     align-items: center;
   }
-  
-  .contact-input, .contact-textarea {
+
+  .property-card,
+  .contractor-card {
     width: 100%;
-    max-width: 500px;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    max-width: 300px;
   }
-  
-  .contact-textarea {
-    height: 150px;
+
+  .cta-button {
+    font-size: 1.1rem;
+    padding: 15px 25px;
   }
-  
-  footer {
-    background-color: #333;
-    color: white;
-    padding: 20px;
-    text-align: center;
-    margin-top: auto;
-  }
-  
-  .footer-text {
-    font-size: 1rem;
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .hero-title {
-      font-size: 2.5rem;
-    }
-  
-    .property-list, .contractor-list {
-      flex-direction: column;
-      align-items: center;
-    }
-  
-    .property-card, .contractor-card {
-      width: 100%;
-      max-width: 300px;
-    }
-  
-    .cta-button {
-      font-size: 1.1rem;
-      padding: 15px 25px;
-    }
-  }
-  
+}

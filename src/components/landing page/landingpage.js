@@ -1,10 +1,18 @@
-import React from "react";
-import "./landingpage.css";  // Importing custom styles
+import React, { useState } from "react";
+import "./landingpage.css"; // Importing custom styles
+import AuthPage from "../login/login";
+import { useNavigate } from "react-router-dom";
 
 function Landing() {
+  const navigate = useNavigate();
+  const [showAuth, setShowAuth] = useState(false);
+  const handleSignupClick = () => {
+    setShowAuth(true);
+    navigate("/signup"); // Navigate to the signup page
+  };
   return (
     <div className="landing-container">
-      <header className="landing-header">
+      {/* <header className="landing-header">
         <div className="logo">RealEstate</div>
         <nav>
           <ul>
@@ -13,13 +21,21 @@ function Landing() {
             <li><a href="#contact">Contact</a></li>
           </ul>
         </nav>
-      </header>
+      </header> */}
 
       <section className="hero">
         <div className="hero-content">
           <div className="hero-title">Find Your Dream Property</div>
-          <div className="hero-description">Explore properties listed by dealers and contractors to build your ideal home.</div>
-          <button className="cta-button">Start Exploring</button>
+          <div className="hero-description">
+            Explore properties listed by dealers and contractors to build your
+            ideal home.
+          </div>
+          <>
+            <button className="cta-button" onClick={handleSignupClick}>
+              Sign up with Us
+            </button>
+            {showAuth && <AuthPage />}
+          </>
         </div>
       </section>
 
@@ -29,12 +45,16 @@ function Landing() {
           <div className="property-card">
             <img src="https://via.placeholder.com/150" alt="Property" />
             <div className="card-title">Property Dealer 1</div>
-            <div className="card-description">Explore beautiful properties in the city center.</div>
+            <div className="card-description">
+              Explore beautiful properties in the city center.
+            </div>
           </div>
           <div className="property-card">
             <img src="https://via.placeholder.com/150" alt="Property" />
             <div className="card-title">Property Dealer 2</div>
-            <div className="card-description">Find your dream home with affordable prices.</div>
+            <div className="card-description">
+              Find your dream home with affordable prices.
+            </div>
           </div>
           {/* More Property Cards */}
         </div>
@@ -46,12 +66,16 @@ function Landing() {
           <div className="contractor-card">
             <img src="https://via.placeholder.com/150" alt="Contractor" />
             <div className="card-title">Contractor 1</div>
-            <div className="card-description">Build your dream home with the best materials and designs.</div>
+            <div className="card-description">
+              Build your dream home with the best materials and designs.
+            </div>
           </div>
           <div className="contractor-card">
             <img src="https://via.placeholder.com/150" alt="Contractor" />
             <div className="card-title">Contractor 2</div>
-            <div className="card-description">Renovating and building homes with excellence.</div>
+            <div className="card-description">
+              Renovating and building homes with excellence.
+            </div>
           </div>
           {/* More Contractor Cards */}
         </div>
@@ -60,15 +84,33 @@ function Landing() {
       <section id="contact" className="contact-section">
         <div className="contact-title">Contact Us</div>
         <form className="contact-form">
-          <input type="text" className="contact-input" placeholder="Your Name" required />
-          <input type="email" className="contact-input" placeholder="Your Email" required />
-          <textarea className="contact-textarea" placeholder="Your Message" required></textarea>
-          <button type="submit" className="cta-button">Send Message</button>
+          <input
+            type="text"
+            className="contact-input"
+            placeholder="Your Name"
+            required
+          />
+          <input
+            type="email"
+            className="contact-input"
+            placeholder="Your Email"
+            required
+          />
+          <textarea
+            className="contact-textarea"
+            placeholder="Your Message"
+            required
+          ></textarea>
+          <button type="submit" className="cta-button">
+            Send Message
+          </button>
         </form>
       </section>
 
       <footer className="landing-footer">
-        <div className="footer-text">© 2025 RealEstate. All rights reserved.</div>
+        <div className="footer-text">
+          © 2025 RealEstate. All rights reserved.
+        </div>
       </footer>
     </div>
   );
