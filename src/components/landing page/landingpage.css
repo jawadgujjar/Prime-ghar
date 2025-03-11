@@ -137,33 +137,65 @@ body {
 
 /* Contact Section */
 .contact-section {
-  background-color: #f9f9f9;
-  padding: 50px 20px;
+  padding: 60px 20px;
+  text-align: center;
+  color: white;
 }
 
 .contact-title {
   font-size: 2.5rem;
-  margin-bottom: 30px;
+  font-weight: bold;
+  color: #ff5733; /* Orange */
+  margin-bottom: 20px;
 }
 
 .contact-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 30px;
+  background: #1a1a1a; /* Dark container */
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(255, 87, 51, 0.2);
 }
 
 .contact-input,
 .contact-textarea {
   width: 100%;
-  max-width: 500px;
-  padding: 10px;
+  padding: 12px;
   margin-bottom: 15px;
-  border: 1px solid #ddd;
+  border: 2px solid #ff5733; /* Orange Border */
   border-radius: 5px;
+  background: #333; /* Dark input fields */
+  color: white;
+  font-size: 1rem;
+}
+
+.contact-input::placeholder,
+.contact-textarea::placeholder {
+  color: #bbb;
 }
 
 .contact-textarea {
-  height: 150px;
+  height: 120px;
+  resize: none;
+}
+
+.contact-btn {
+  width: 100%;
+  background: #ff5733; /* Orange button */
+  color: white;
+  font-size: 1rem;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+  font-weight: bold;
+}
+
+.contact-btn:hover {
+  background: #e64c29; /* Darker orange */
+  box-shadow: 0 4px 10px rgba(255, 87, 51, 0.4);
 }
 
 footer {
