@@ -118,7 +118,7 @@ const ContractorDetail = () => {
       {/* Contractor's Properties */}
       {propertiesList.length > 0 ? (
         <Row className="mt-4">
-          <h4 className="text-dark fw-bold">Properties Listed</h4>
+          <h4 className="text-dark fw-bold">Portfolio Listed</h4>
           {propertiesList.map((property) => (
             <Col md={4} key={property.id} className="mb-4">
               <Card

@@ -110,7 +110,9 @@ const NewDashboard = () => {
         </Col>
         <Col className="text-end">
           <Button variant="primary" onClick={() => navigate("/add-property")}>
-            + Add Property
+            {dealer.role === "contractor"
+              ? "+ Add Portfolio"
+              : "+ Add Property"}
           </Button>
         </Col>
       </Row>
