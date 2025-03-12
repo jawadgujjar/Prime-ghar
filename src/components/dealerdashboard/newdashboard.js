@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Container,
   Row,
@@ -20,8 +20,7 @@ import {
   FaClipboardList,
 } from "react-icons/fa";
 
-const DealerDetails = () => {
-  const { id } = useParams();
+const NewDashboard = () => {
   const navigate = useNavigate();
   const [dealer, setDealer] = useState(null);
   const [propertiesList, setPropertiesList] = useState([]);
@@ -30,11 +29,21 @@ const DealerDetails = () => {
 
   useEffect(() => {
     const fetchDealerDetails = async () => {
-      try {
-        const response = await users.get(`/${id}`);
-        setDealer(response.data);
+      // 🛠️ LocalStorage se user object uthao
+      const storedUser = localStorage.getItem("user");
+      const userData = storedUser ? JSON.parse(storedUser) : null;
+      const userId = userData?.id; // 👈 User ID extract karo
 
-        const propertiesResponse = await property.get(`/user/${id}`);
+      if (!userId) {
+        setError("User ID not found in localStorage.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await users.get(`/${userId}`);
+        setDealer(response.data);
+        const propertiesResponse = await property.get(`/user/${userId}`);
         setPropertiesList(propertiesResponse.data || []);
       } catch (err) {
         setError("Failed to fetch dealer details. Please try again.");
@@ -44,7 +53,7 @@ const DealerDetails = () => {
     };
 
     fetchDealerDetails();
-  }, [id]);
+  }, []);
 
   if (loading) return <Spinner animation="border" variant="warning" />;
   if (error) return <Alert variant="danger">{error}</Alert>;
@@ -94,6 +103,19 @@ const DealerDetails = () => {
 
       {/* Property Listings */}
       <h4 className="fw-bold text-dark mt-4">Properties Listed</h4>
+      {/* Property Listings Header with Add Button */}
+      <Row className="d-flex justify-content-between align-items-center mt-4">
+        <Col>
+          <h4 className="fw-bold text-dark">Properties Listed</h4>
+        </Col>
+        <Col className="text-end">
+          <Button variant="primary" onClick={() => navigate("/add-property")}>
+            + Add Property
+          </Button>
+        </Col>
+      </Row>
+
+      {/* Property Listings */}
       <Row>
         {propertiesList.length > 0 ? (
           propertiesList.map((property) => (
@@ -135,4 +157,4 @@ const DealerDetails = () => {
   );
 };
 
-export default DealerDetails;
+export default NewDashboard;
