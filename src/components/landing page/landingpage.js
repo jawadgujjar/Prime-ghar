@@ -14,15 +14,41 @@ function Landing() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    users
-      .get("?role=dealer")
-      .then((res) => setDealers(res.data.results))
-      .catch((err) => console.error("Dealers Fetch Error:", err));
+    let isMounted = true;
+    
+    const fetchData = async () => {
+      try {
+        const [dealersRes, contractorsRes] = await Promise.all([
+          users.get("?role=dealer"),
+          users.get("?role=contractor")
+        ]);
+        
+        if (isMounted) {
+          // Remove duplicates by ID
+          const uniqueDealers = dealersRes.data.results.filter(
+            (dealer, index, self) => 
+              index === self.findIndex(d => d.id === dealer.id)
+          );
+          
+          const uniqueContractors = contractorsRes.data.results.filter(
+            (contractor, index, self) => 
+              index === self.findIndex(c => c.id === contractor.id)
+          );
+          
+          setDealers(uniqueDealers);
+          setContractors(uniqueContractors);
+        }
+      } catch (err) {
+        console.error("Fetch Error:", err);
+        message.error("Failed to load data. Please refresh the page.");
+      }
+    };
 
-    users
-      .get("?role=contractor")
-      .then((res) => setContractors(res.data.results))
-      .catch((err) => console.error("Contractors Fetch Error:", err));
+    fetchData();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleNavigate = (role, id) => {
@@ -65,7 +91,7 @@ function Landing() {
       {/* Dealers Section */}
       <section id="dealers" className="section">
         <h2>Property Dealers</h2>
-        {dealers.length > 0 ? (
+        {dealers.length > 1 ? (
           <Slider {...sliderSettings}>
             {dealers.map((dealer) => (
               <div
@@ -74,14 +100,34 @@ function Landing() {
                 onClick={() => handleNavigate("dealer", dealer.id)}
               >
                 <img
-                  src={dealer.avatar || "https://via.placeholder.com/150"}
+                  src={dealer.avatar || " "}
                   alt={dealer.name}
+                  onError={(e) => {
+                    e.target.src = " ";
+                  }}
                 />
                 <h3>{dealer.name}</h3>
-                <p>{dealer.description}</p>
+                <p>{dealer.description || "No description available"}</p>
               </div>
             ))}
           </Slider>
+        ) : dealers.length === 1 ? (
+          <div className="single-card-wrapper">
+            <div
+              className="property-card"
+              onClick={() => handleNavigate("dealer", dealers[0].id)}
+            >
+              <img
+                src={dealers[0].avatar || " "}
+                alt={dealers[0].name}
+                onError={(e) => {
+                  e.target.src = " ";
+                }}
+              />
+              <h3>{dealers[0].name}</h3>
+              <p>{dealers[0].description || "No description available"}</p>
+            </div>
+          </div>
         ) : (
           <p>No dealers found.</p>
         )}
@@ -90,7 +136,7 @@ function Landing() {
       {/* Contractors Section */}
       <section id="contractors" className="section">
         <h2>Contractors</h2>
-        {contractors.length > 0 ? (
+        {contractors.length > 1 ? (
           <Slider {...sliderSettings}>
             {contractors.map((contractor) => (
               <div
@@ -99,14 +145,34 @@ function Landing() {
                 onClick={() => handleNavigate("contractor", contractor.id)}
               >
                 <img
-                  src={contractor.avatar || "https://via.placeholder.com/150"}
+                  src={contractor.avatar || " "}
                   alt={contractor.name}
+                  onError={(e) => {
+                    e.target.src = " ";
+                  }}
                 />
                 <h3>{contractor.name}</h3>
-                <p>{contractor.description}</p>
+                <p>{contractor.description || "No description available"}</p>
               </div>
             ))}
           </Slider>
+        ) : contractors.length === 1 ? (
+          <div className="single-card-wrapper">
+            <div
+              className="contractor-card"
+              onClick={() => handleNavigate("contractor", contractors[0].id)}
+            >
+              <img
+                src={contractors[0].avatar || " "}
+                alt={contractors[0].name}
+                onError={(e) => {
+                  e.target.src = " ";
+                }}
+              />
+              <h3>{contractors[0].name}</h3>
+              <p>{contractors[0].description || "No description available"}</p>
+            </div>
+          </div>
         ) : (
           <p>No contractors found.</p>
         )}
@@ -164,9 +230,7 @@ function Landing() {
 
       {/* Footer */}
       <footer className="footer">
-        <p>
-          &copy; {new Date().getFullYear()} Prime Ghar. All rights reserved.
-        </p>
+        <p>&copy; {new Date().getFullYear()} Prime Ghar. All rights reserved.</p>
       </footer>
     </div>
   );
