@@ -28,6 +28,26 @@ body {
   text-align: center;
   background-color: #222;
 }
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  justify-content: center;
+  padding: 0 20px;
+}
+.property-card,
+.contractor-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 10px 0;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
 
 .hero-content {
   background: rgba(0, 0, 0, 0.5);
