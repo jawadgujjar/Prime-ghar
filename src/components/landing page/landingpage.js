@@ -95,144 +95,81 @@ function Landing() {
 
       {/* Dealers Section */}
       <section id="dealers" className="section">
-        <h2>Property Dealers</h2>
-        {dealers.length > 1 ? (
-          <Slider {...sliderSettings}>
-            {dealers.map((dealer) => (
-              <div
-                key={dealer.id}
-                className="property-card"
-                onClick={() => handleNavigate("dealer", dealer.id)}
-              >
-                <img
-                  src={dealer.avatar || " "}
-                  alt={dealer.name}
-                  onError={(e) => {
-                    e.target.src = " ";
-                  }}
-                />
-                <h3>{dealer.name}</h3>
-                <p>{dealer.description || "No description available"}</p>
-                <div className="product-ratings-left">
-                  <span className="stars">
-                    <StarFilled />
-                    <StarFilled />
-                    <StarFilled />
-                    <StarFilled />
-                    <StarTwoTone twoToneColor="#fadb14" />
-                  </span>
-                  <div className="reviews">
-                    <h4>Reviews:</h4>
-                    <p>"Great service, highly recommend!"</p>
-                    <p>"Very professional and reliable."</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </Slider>
-        ) : dealers.length === 1 ? (
-          <div className="single-card-wrapper">
-            <div
-              className="property-card"
-              onClick={() => handleNavigate("dealer", dealers[0].id)}
-            >
-              <img
-                src={dealers[0].avatar || " "}
-                alt={dealers[0].name}
-                onError={(e) => {
-                  e.target.src = " ";
-                }}
-              />
-              <h3>{dealers[0].name}</h3>
-              <p>{dealers[0].description || "No description available"}</p>
-              <div className="product-ratings-left">
-                <div className="reviews">
-                  {" "}
-                  <h4>Reviews:</h4>
-                </div>
-                <span className="stars">
-                  <StarFilled />
-                  <StarFilled />
-                  <StarFilled />
-                  <StarFilled />
-                  <StarTwoTone twoToneColor="#fadb14" />
-                </span>
-              </div>
+  <h2>Property Dealers</h2>
+  {dealers.length ? (
+    <div className="card-grid">
+      {dealers.map((dealer) => (
+        <div
+          key={dealer.id}
+          className="property-card"
+          onClick={() => handleNavigate("dealer", dealer.id)}
+        >
+          <img
+            src={dealer.avatar || " "}
+            alt={dealer.name}
+            onError={(e) => (e.target.src = " ")}
+          />
+          <h3>{dealer.name}</h3>
+          <p>{dealer.description || "No description available"}</p>
+          <div className="product-ratings-left">
+            <div className="reviews">
+              <h4>Reviews:</h4>
             </div>
+            <span className="stars">
+              <StarFilled />
+              <StarFilled />
+              <StarFilled />
+              <StarFilled />
+              <StarTwoTone twoToneColor="#fadb14" />
+            </span>
           </div>
-        ) : (
-          <p>No dealers found.</p>
-        )}
-      </section>
+        </div>
+      ))}
+    </div>
+  ) : (
+    <p>No dealers found.</p>
+  )}
+</section>
+
 
       {/* Contractors Section */}
       <section id="contractors" className="section">
-        <h2>Contractors</h2>
-        {contractors.length > 1 ? (
-          <Slider {...sliderSettings}>
-            {contractors.map((contractor) => (
-              <div
-                key={contractor.id}
-                className="contractor-card"
-                onClick={() => handleNavigate("contractor", contractor.id)}
-              >
-                <img
-                  src={contractor.avatar || " "}
-                  alt={contractor.name}
-                  onError={(e) => {
-                    e.target.src = " ";
-                  }}
-                />
-                <h3>{contractor.name}</h3>
-                <p>{contractor.description || "No description available"}</p>
-                <div className="product-ratings-left">
-                  <span className="stars">
-                    <StarFilled />
-                    <StarFilled />
-                    <StarFilled />
-                    <StarFilled />
-                    <StarTwoTone twoToneColor="#fadb14" />
-                  </span>
-                  <div className="reviews"></div>
-                </div>
-              </div>
-            ))}
-          </Slider>
-        ) : contractors.length === 1 ? (
-          <div className="single-card-wrapper">
-            <div
-              className="contractor-card"
-              onClick={() => handleNavigate("contractor", contractors[0].id)}
-            >
-              <img
-                src={contractors[0].avatar || " "}
-                alt={contractors[0].name}
-                onError={(e) => {
-                  e.target.src = " ";
-                }}
-              />
-              <h3>{contractors[0].name}</h3>
-              <p>{contractors[0].description || "No description available"}</p>
-
-              <div className="product-ratings-left">
-                <div className="reviews">
-                  <h4>Reviews:</h4>
-                </div>
-                <span className="stars">
-                  <StarFilled />
-                  <StarFilled />
-                  <StarFilled />
-                  <StarFilled />
-                  <StarTwoTone twoToneColor="#fadb14" />
-                </span>
-                <div className="reviews"></div>
-              </div>
+  <h2>Contractors</h2>
+  {contractors.length ? (
+    <div className="card-grid">
+      {contractors.map((contractor) => (
+        <div
+          key={contractor.id}
+          className="contractor-card"
+          onClick={() => handleNavigate("contractor", contractor.id)}
+        >
+          <img
+            src={contractor.avatar || " "}
+            alt={contractor.name}
+            onError={(e) => (e.target.src = " ")}
+          />
+          <h3>{contractor.name}</h3>
+          <p>{contractor.description || "No description available"}</p>
+          <div className="product-ratings-left">
+            <div className="reviews">
+              <h4>Reviews:</h4>
             </div>
+            <span className="stars">
+              <StarFilled />
+              <StarFilled />
+              <StarFilled />
+              <StarFilled />
+              <StarTwoTone twoToneColor="#fadb14" />
+            </span>
           </div>
-        ) : (
-          <p>No contractors found.</p>
-        )}
-      </section>
+        </div>
+      ))}
+    </div>
+  ) : (
+    <p>No contractors found.</p>
+  )}
+</section>
+
 
       {/* Contact Us Section */}
       <section id="contact" className="contact-section">
