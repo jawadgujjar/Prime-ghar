@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
+import {
+  Navbar,
+  Nav,
+  Container,
+  Button,
+} from "react-bootstrap";
+import { FaWhatsapp } from "react-icons/fa";
+import { MdEmail } from "react-icons/md";
+import "./navbar.css";
 
 function NavScrollExample() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  // Function to get user from localStorage
   const fetchUser = () => {
     const storedUser = localStorage.getItem("user");
     setUser(storedUser ? JSON.parse(storedUser) : null);
@@ -29,7 +32,6 @@ function NavScrollExample() {
     };
   }, []);
 
-  // Logout function
   const handleLogout = () => {
     localStorage.removeItem("user");
     window.dispatchEvent(new Event("userLoggedOut"));
@@ -37,43 +39,22 @@ function NavScrollExample() {
   };
 
   return (
-    <Navbar expand="lg" className="bg-body-tertiary">
+    <Navbar expand="lg" className="custom-navbar shadow-sm" sticky="top">
       <Container fluid>
-        <Navbar.Brand
-          as={Link}
-          to={
-            user && (user.role === "dealer" || user.role === "contractor")
-              ? "/newdashboard"
-              : "/"
-          }
-        >
+        <Navbar.Brand as={Link} to={user?.role ? "/dashboard" : "/"}>
           <img
-            style={{ width: "8rem", height: "7rem" }}
-            alt="logo"
             src="primeghar.png"
+            alt="Prime Ghar"
+            style={{ width: "8rem", height: "auto" }}
           />
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls="navbarScroll" />
-        <Navbar.Collapse id="navbarScroll">
-          <Nav className="me-auto" navbarScroll></Nav>
-          <Nav
-            className="me-auto"
-            style={{ display: "flex", gap: "2rem", fontSize: "1.2rem" }}
-            navbarScroll
-          >
-            <Nav.Link
-              as={Link}
-              to={
-                user && (user.role === "dealer" || user.role === "contractor")
-                  ? "/newdashboard"
-                  : "/"
-              }
-            >
+        <Navbar.Toggle />
+        <Navbar.Collapse>
+          <Nav className="me-auto align-items-lg-center gap-lg-4 nav-links">
+            <Nav.Link as={Link} to={user?.role ? "/dashboard" : "/"}>
               Home
             </Nav.Link>
-
-            {/* ✅ Show 'My Listing' if user is dealer/contractor */}
-            {user && (user.role === "dealer" || user.role === "contractor") ? (
+            {user?.role === "dealer" || user?.role === "contractor" ? (
               <Nav.Link as={Link} to="/newdashboard">
                 My Listing
               </Nav.Link>
@@ -87,45 +68,53 @@ function NavScrollExample() {
                 </Nav.Link>
               </>
             )}
+          </Nav>
 
-            {user ? (
-              <div className="d-flex align-items-center gap-3">
+          {user ? (
+            <Nav className="d-flex align-items-center gap-3">
+              <div className="d-flex align-items-center gap-2 user-box">
                 {user.avatar && (
                   <img
                     src={user.avatar}
-                    alt="User Avatar"
-                    style={{
-                      width: "40px",
-                      height: "40px",
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                    }}
+                    alt="Avatar"
+                    className="avatar-img"
                   />
                 )}
-                <span>{user.name}</span>
-                <Button
-                  variant="outline-danger"
-                  size="sm"
-                  onClick={handleLogout}
-                >
-                  Logout
-                </Button>
+                <span className="user-name">{user.name}</span>
               </div>
-            ) : (
+
+              {/* WhatsApp & Email Icons */}
+              <a
+                href="https://wa.me/yourNumberHere"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="icon-link"
+              >
+                <FaWhatsapp size={28} style={{ color: "#25d366" }} />
+              </a>
+              <a
+                href="mailto:your@email.com"
+                className="icon-link"
+              >
+                <MdEmail size={28} style={{ color: "#111" }} />
+              </a>
+
+              <Button
+                variant="outline-danger"
+                size="md"
+                onClick={handleLogout}
+                className="rounded-pill"
+              >
+                Logout
+              </Button>
+            </Nav>
+          ) : (
+            <Nav>
               <Nav.Link as={Link} to="/login">
                 Login
               </Nav.Link>
-            )}
-          </Nav>
-          <Form className="d-flex">
-            <Form.Control
-              type="search"
-              placeholder="Type Location Here"
-              className="me-2"
-              aria-label="Search"
-            />
-            <Button variant="outline-success">Search</Button>
-          </Form>
+            </Nav>
+          )}
         </Navbar.Collapse>
       </Container>
     </Navbar>

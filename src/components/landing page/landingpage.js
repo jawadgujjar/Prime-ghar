@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, Input, Button, message } from "antd";
 import { users, contact } from "../../utils/axios";
+import { StarFilled, StarTwoTone } from "@ant-design/icons";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -15,26 +16,30 @@ function Landing() {
 
   useEffect(() => {
     let isMounted = true;
-    
+
     const fetchData = async () => {
       try {
         const [dealersRes, contractorsRes] = await Promise.all([
           users.get("?role=dealer"),
-          users.get("?role=contractor")
+          users.get("?role=contractor"),
         ]);
-        
+
         if (isMounted) {
-          // Remove duplicates by ID
+          const allDealers = dealersRes.data.results;
+          const allContractors = contractorsRes.data.results;
+
           const uniqueDealers = dealersRes.data.results.filter(
-            (dealer, index, self) => 
-              index === self.findIndex(d => d.id === dealer.id)
+            (dealer, index, self) =>
+              index === self.findIndex((d) => d.id === dealer.id)
           );
-          
-          const uniqueContractors = contractorsRes.data.results.filter(
-            (contractor, index, self) => 
-              index === self.findIndex(c => c.id === contractor.id)
-          );
-          
+
+          const uniqueContractors = allContractors
+            .filter((c) => !uniqueDealers.find((d) => d.id === c.id)) // remove overlap
+            .filter(
+              (contractor, index, self) =>
+                index === self.findIndex((c) => c.id === contractor.id)
+            );
+
           setDealers(uniqueDealers);
           setContractors(uniqueContractors);
         }
@@ -108,6 +113,20 @@ function Landing() {
                 />
                 <h3>{dealer.name}</h3>
                 <p>{dealer.description || "No description available"}</p>
+                <div className="product-ratings-left">
+                  <span className="stars">
+                    <StarFilled />
+                    <StarFilled />
+                    <StarFilled />
+                    <StarFilled />
+                    <StarTwoTone twoToneColor="#fadb14" />
+                  </span>
+                  <div className="reviews">
+                    <h4>Reviews:</h4>
+                    <p>"Great service, highly recommend!"</p>
+                    <p>"Very professional and reliable."</p>
+                  </div>
+                </div>
               </div>
             ))}
           </Slider>
@@ -126,6 +145,19 @@ function Landing() {
               />
               <h3>{dealers[0].name}</h3>
               <p>{dealers[0].description || "No description available"}</p>
+              <div className="product-ratings-left">
+                <div className="reviews">
+                  {" "}
+                  <h4>Reviews:</h4>
+                </div>
+                <span className="stars">
+                  <StarFilled />
+                  <StarFilled />
+                  <StarFilled />
+                  <StarFilled />
+                  <StarTwoTone twoToneColor="#fadb14" />
+                </span>
+              </div>
             </div>
           </div>
         ) : (
@@ -153,6 +185,16 @@ function Landing() {
                 />
                 <h3>{contractor.name}</h3>
                 <p>{contractor.description || "No description available"}</p>
+                <div className="product-ratings-left">
+                  <span className="stars">
+                    <StarFilled />
+                    <StarFilled />
+                    <StarFilled />
+                    <StarFilled />
+                    <StarTwoTone twoToneColor="#fadb14" />
+                  </span>
+                  <div className="reviews"></div>
+                </div>
               </div>
             ))}
           </Slider>
@@ -171,6 +213,20 @@ function Landing() {
               />
               <h3>{contractors[0].name}</h3>
               <p>{contractors[0].description || "No description available"}</p>
+
+              <div className="product-ratings-left">
+                <div className="reviews">
+                  <h4>Reviews:</h4>
+                </div>
+                <span className="stars">
+                  <StarFilled />
+                  <StarFilled />
+                  <StarFilled />
+                  <StarFilled />
+                  <StarTwoTone twoToneColor="#fadb14" />
+                </span>
+                <div className="reviews"></div>
+              </div>
             </div>
           </div>
         ) : (
@@ -195,10 +251,7 @@ function Landing() {
 
           <Form.Item
             name="email"
-            rules={[
-              { required: true, message: "Please enter your email" },
-              { type: "email", message: "Enter a valid email" },
-            ]}
+            rules={[{ required: true, message: "Please enter your email" }]}
           >
             <Input placeholder="Your Email" className="contact-input" />
           </Form.Item>
@@ -230,7 +283,9 @@ function Landing() {
 
       {/* Footer */}
       <footer className="footer">
-        <p>&copy; {new Date().getFullYear()} Prime Ghar. All rights reserved.</p>
+        <p>
+          &copy; {new Date().getFullYear()} Prime Ghar. All rights reserved.
+        </p>
       </footer>
     </div>
   );

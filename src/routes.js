@@ -16,6 +16,7 @@ import ContractorDetail from "./components/contractors/contractordetail";
 import PropertyDetail from "./components/property/propertydetail";
 import NewDashboard from "./components/dealerdashboard/newdashboard";
 import AddProperty from "./components/dealerdashboard/addproperty";
+import SearchPage from "./components/search/search";
 
 // ✅ Function to check if user is logged in
 const isAuthenticated = () => {
@@ -41,6 +42,7 @@ const AppRoutes = () => {
         <Route path="/contractors" element={<ContractorsList />} />
         <Route path="/contractors/:id" element={<ContractorDetail />} />
         <Route path="/propertydetail/:id" element={<PropertyDetail />} />
+        <Route path="/search" element={<SearchPage />} />
         <Route
           path="/newdashboard"
           element={<ProtectedRoute element={<NewDashboard />} />}
