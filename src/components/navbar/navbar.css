@@ -1,0 +1,90 @@
+.custom-navbar {
+    background-color: #f0f0f0; /* light gray */
+    padding: 0.4rem 1rem;
+    z-index: 1000;
+  }
+  
+  .nav-links .nav-link {
+    position: relative;
+    font-weight: 500;
+    color: #111111;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+  }
+  
+  .nav-links .nav-link:hover {
+    font-weight: bold;
+    color: #000;
+  }
+  
+  .nav-links .nav-link::after {
+    content: "";
+    position: absolute;
+    width: 0%;
+    height: 2px;
+    background-color: #28a745;
+    bottom: -4px;
+    left: 0;
+    transition: 0.3s ease;
+  }
+  
+  .nav-links .nav-link:hover::after {
+    width: 100%;
+  }
+  
+  .avatar-img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+    transition: transform 0.2s ease;
+  }
+  
+  .avatar-img:hover {
+    transform: scale(1.05);
+    border-color: #28a745;
+  }
+  
+  .user-box {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .user-name {
+    font-size: 1rem;
+  }
+  
+  /* Icon Styling */
+  .icon-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    transition: transform 0.2s ease;
+  }
+  
+  .icon-link:hover {
+    transform: scale(1.15);
+  }
+  
+  .icon-link svg {
+    width: 28px;
+    height: 28px;
+  }
+  
+  @media (max-width: 767px) {
+    .user-name {
+      display: none;
+    }
+  
+    .avatar-img {
+      width: 32px;
+      height: 32px;
+    }
+  
+    .custom-navbar {
+      padding: 0.4rem 0.6rem;
+    }
+  }
+  
