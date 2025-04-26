@@ -1,62 +1,120 @@
-import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Navbar,
+  Nav,
+  Container,
+  Button,
+} from "react-bootstrap";
+import { FaWhatsapp } from "react-icons/fa";
+import { MdEmail } from "react-icons/md";
+import "./navbar.css";
 
 function NavScrollExample() {
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  const fetchUser = () => {
+    const storedUser = localStorage.getItem("user");
+    setUser(storedUser ? JSON.parse(storedUser) : null);
+  };
+
+  useEffect(() => {
+    fetchUser();
+
+    const handleUserChange = () => fetchUser();
+    window.addEventListener("userLoggedIn", handleUserChange);
+    window.addEventListener("userLoggedOut", handleUserChange);
+
+    return () => {
+      window.removeEventListener("userLoggedIn", handleUserChange);
+      window.removeEventListener("userLoggedOut", handleUserChange);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    window.dispatchEvent(new Event("userLoggedOut"));
+    navigate("/");
+  };
+
   return (
-    <Navbar
-      expand="lg"
-      className="bg-body-tertiary"
-      style={{
-        padding: "1rem",
-      }}
-    >
+    <Navbar expand="lg" className="custom-navbar shadow-sm" sticky="top">
       <Container fluid>
-        <Navbar.Brand as={Link} to="/">
-          Prime Ghar
+        <Navbar.Brand as={Link} to={user?.role ? "/dashboard" : "/"}>
+          <img
+            src="primeghar.png"
+            alt="Prime Ghar"
+            style={{ width: "8rem", height: "auto" }}
+          />
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls="navbarScroll" />
-        <Navbar.Collapse id="navbarScroll">
-          <Nav
-            className="me-auto"
-            style={{ maxHeight: "100px" }}
-            navbarScroll
-          ></Nav>
-          <Nav
-            className="me-auto"
-            style={{
-              maxHeight: "100px",
-              display: "flex",
-              gap: "2rem",
-              fontSize: "1.2rem",
-            }}
-            navbarScroll
-          >
-            <Nav.Link as={Link} to="/">
+        <Navbar.Toggle />
+        <Navbar.Collapse>
+          <Nav className="me-auto align-items-lg-center gap-lg-4 nav-links">
+            <Nav.Link as={Link} to={user?.role ? "/dashboard" : "/"}>
               Home
             </Nav.Link>
-            <Nav.Link as={Link} to="/dealers">
-              Dealers
-            </Nav.Link>
-            <Nav.Link as={Link} to="/contractors">
-              Contractors
-            </Nav.Link>
-            <Nav.Link as={Link} to="/login">
-              Login
-            </Nav.Link>{" "}
+            {user?.role === "dealer" || user?.role === "contractor" ? (
+              <Nav.Link as={Link} to="/newdashboard">
+                My Listing
+              </Nav.Link>
+            ) : (
+              <>
+                <Nav.Link as={Link} to="/dealers">
+                  Dealers
+                </Nav.Link>
+                <Nav.Link as={Link} to="/contractors">
+                  Contractors
+                </Nav.Link>
+              </>
+            )}
           </Nav>
-          <Form className="d-flex">
-            <Form.Control
-              type="search"
-              placeholder="Type Location Here"
-              className="me-2"
-              aria-label="Search"
-            />
-            <Button variant="outline-success">Search</Button>
-          </Form>
+
+          {user ? (
+            <Nav className="d-flex align-items-center gap-3">
+              <div className="d-flex align-items-center gap-2 user-box">
+                {user.avatar && (
+                  <img
+                    src={user.avatar}
+                    alt="Avatar"
+                    className="avatar-img"
+                  />
+                )}
+                <span className="user-name">{user.name}</span>
+              </div>
+
+              {/* WhatsApp & Email Icons */}
+              <a
+                href="https://wa.me/yourNumberHere"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="icon-link"
+              >
+                <FaWhatsapp size={28} style={{ color: "#25d366" }} />
+              </a>
+              <a
+                href="mailto:your@email.com"
+                className="icon-link"
+              >
+                <MdEmail size={28} style={{ color: "#111" }} />
+              </a>
+
+              <Button
+                variant="outline-danger"
+                size="md"
+                onClick={handleLogout}
+                className="rounded-pill"
+              >
+                Logout
+              </Button>
+            </Nav>
+          ) : (
+            <Nav>
+              <Nav.Link as={Link} to="/login">
+                Login
+              </Nav.Link>
+            </Nav>
+          )}
         </Navbar.Collapse>
       </Container>
     </Navbar>
