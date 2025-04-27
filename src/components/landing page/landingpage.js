@@ -127,6 +127,7 @@ function Landing() {
       {/* Dealers Section */}
       <section id="dealers" className="section">
         <h2>Property Dealers</h2>
+        <hr/>
         {filteredDealers.length ? (
           <div className="card-grid">
             {filteredDealers.map((dealer) => (
@@ -144,7 +145,7 @@ function Landing() {
                 <p>{dealer.description || "No description available"}</p>
                 <div className="product-ratings-left">
                   <div className="reviews">
-                    <h4>Reviews:</h4>
+                    <h4 style={{ fontWeight:'bold'}}>Reviews:</h4>
                   </div>
                   <span className="stars">
                     <StarFilled />
@@ -154,6 +155,7 @@ function Landing() {
                     <StarTwoTone twoToneColor="#fadb14" />
                   </span>
                 </div>
+                <div style={{textAlign:'left',fontWeight:'bold'}}>Total Listing: 02</div>
               </div>
             ))}
           </div>
@@ -165,6 +167,7 @@ function Landing() {
       {/* Contractors Section */}
       <section id="contractors" className="section">
         <h2>Contractors</h2>
+        <hr/>
         {filteredContractors.length ? (
           <div className="card-grid">
             {filteredContractors.map((contractor) => (
@@ -192,6 +195,7 @@ function Landing() {
                     <StarTwoTone twoToneColor="#fadb14" />
                   </span>
                 </div>
+                <div style={{textAlign:'left',fontWeight:'bold'}}>Total Listing: 05</div>
               </div>
             ))}
           </div>

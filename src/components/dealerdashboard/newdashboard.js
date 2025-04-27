@@ -27,12 +27,33 @@ const NewDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // ✅ Delete handler without restriction
+  const handleDelete = async (propertyId) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this property?");
+    if (!confirmDelete) return;
+  
+    const token = localStorage.getItem("token");
+  
+    try {
+      await property.delete(`/${propertyId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      setPropertiesList((prev) => prev.filter((p) => p.id !== propertyId));
+    } catch (err) {
+      alert("Failed to delete property. Please authenticate.");
+      console.error(err);
+    }
+  };
+  
+
   useEffect(() => {
     const fetchDealerDetails = async () => {
-      // 🛠️ LocalStorage se user object uthao
       const storedUser = localStorage.getItem("user");
       const userData = storedUser ? JSON.parse(storedUser) : null;
-      const userId = userData?.id; // 👈 User ID extract karo
+      const userId = userData?.id;
 
       if (!userId) {
         setError("User ID not found in localStorage.");
@@ -43,6 +64,7 @@ const NewDashboard = () => {
       try {
         const response = await users.get(`/${userId}`);
         setDealer(response.data);
+
         const propertiesResponse = await property.get(`/user/${userId}`);
         setPropertiesList(propertiesResponse.data || []);
       } catch (err) {
@@ -101,23 +123,19 @@ const NewDashboard = () => {
         </Col>
       </Row>
 
-      {/* Property Listings */}
-      <h4 className="fw-bold text-dark mt-4">Properties Listed</h4>
-      {/* Property Listings Header with Add Button */}
+      {/* Property Listings Header */}
       <Row className="d-flex justify-content-between align-items-center mt-4">
         <Col>
           <h4 className="fw-bold text-dark">Properties Listed</h4>
         </Col>
         <Col className="text-end">
           <Button variant="primary" onClick={() => navigate("/add-property")}>
-            {dealer.role === "contractor"
-              ? "+ Add Portfolio"
-              : "+ Add Property"}
+            {dealer.role === "contractor" ? "+ Add Portfolio" : "+ Add Property"}
           </Button>
         </Col>
       </Row>
 
-      {/* Property Listings */}
+      {/* Property Cards */}
       <Row>
         {propertiesList.length > 0 ? (
           propertiesList.map((property) => (
@@ -142,9 +160,29 @@ const NewDashboard = () => {
                   <p className="fw-bold">
                     Price: Rs {property.price.toLocaleString()}
                   </p>
-                  <Button variant="outline-primary" size="sm">
-                    View Details
-                  </Button>
+                  <div className="d-flex justify-content-between">
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/propertydetail/${property.id}`);
+                      }}
+                    >
+                      View Details
+                    </Button>
+
+                    <Button
+                      variant="outline-danger"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(property.id);
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </div>
                 </Card.Body>
               </Card>
             </Col>
