@@ -2,6 +2,7 @@
     background-color: #f0f0f0; /* light gray */
     padding: 0.4rem 1rem;
     z-index: 1000;
+    height: 7rem !important;
   }
   
   .nav-links .nav-link {
@@ -84,7 +85,15 @@
     }
   
     .custom-navbar {
-      padding: 0.4rem 0.6rem;
+      background-color: #f0f0f0; /* light gray */
+      padding: 0.4rem 1rem;
+      z-index: 1000;
+      height: 10rem !important;
     }
+    .nav-links .nav-link:hover {
+      font-weight: bold;
+      background-color: white !important;
+    }
+    
   }
   

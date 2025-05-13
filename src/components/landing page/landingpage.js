@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, Input, Button, message } from "antd";
-import { users, contact } from "../../utils/axios";
+import { users, contact, property } from "../../utils/axios";
 import { StarFilled, StarTwoTone } from "@ant-design/icons";
-import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./landingpage.css";
@@ -12,7 +11,24 @@ function Landing() {
   const navigate = useNavigate();
   const [dealers, setDealers] = useState([]);
   const [contractors, setContractors] = useState([]);
+  const [filteredDealers, setFilteredDealers] = useState([]);
+  const [filteredContractors, setFilteredContractors] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const fetchPropertyCounts = async (users, role) => {
+    const counts = {};
+    for (const user of users) {
+      try {
+        const response = await property.get(`/user/${user.id}`);
+        counts[user.id] = response.data.length;
+      } catch (error) {
+        console.error(`Error fetching properties for ${role} ${user.id}:`, error);
+        counts[user.id] = 0;
+      }
+    }
+    return counts;
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -28,20 +44,39 @@ function Landing() {
           const allDealers = dealersRes.data.results;
           const allContractors = contractorsRes.data.results;
 
-          const uniqueDealers = dealersRes.data.results.filter(
+          const uniqueDealers = allDealers.filter(
             (dealer, index, self) =>
               index === self.findIndex((d) => d.id === dealer.id)
           );
 
           const uniqueContractors = allContractors
-            .filter((c) => !uniqueDealers.find((d) => d.id === c.id)) // remove overlap
+            .filter((c) => !uniqueDealers.find((d) => d.id === c.id))
             .filter(
               (contractor, index, self) =>
                 index === self.findIndex((c) => c.id === contractor.id)
             );
 
-          setDealers(uniqueDealers);
-          setContractors(uniqueContractors);
+          // Fetch property counts for both dealers and contractors
+          const [dealerCounts, contractorCounts] = await Promise.all([
+            fetchPropertyCounts(uniqueDealers, 'dealer'),
+            fetchPropertyCounts(uniqueContractors, 'contractor')
+          ]);
+
+          // Add counts to users
+          const dealersWithCounts = uniqueDealers.map(dealer => ({
+            ...dealer,
+            listingCount: dealerCounts[dealer.id] || 0
+          }));
+
+          const contractorsWithCounts = uniqueContractors.map(contractor => ({
+            ...contractor,
+            listingCount: contractorCounts[contractor.id] || 0
+          }));
+
+          setDealers(dealersWithCounts);
+          setContractors(contractorsWithCounts);
+          setFilteredDealers(dealersWithCounts);
+          setFilteredContractors(contractorsWithCounts);
         }
       } catch (err) {
         console.error("Fetch Error:", err);
@@ -72,104 +107,137 @@ function Landing() {
     setLoading(false);
   };
 
-  const sliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    responsive: [
-      { breakpoint: 1024, settings: { slidesToShow: 2 } },
-      { breakpoint: 768, settings: { slidesToShow: 1 } },
-    ],
+  const handleSearch = (e) => {
+    const value = e.target.value.toLowerCase();
+    setSearchTerm(value);
+
+    if (!value) {
+      setFilteredDealers(dealers);
+      setFilteredContractors(contractors);
+      return;
+    }
+
+    const filterAddress = (user) => {
+      if (!user.agencyAddress || !user.agencyAddress.length) return false;
+      const address = user.agencyAddress[0];
+      const addressFields = [
+        address.street,
+        address.city,
+        address.state,
+        address.zipCode,
+        address.country,
+      ];
+      return addressFields.some(
+        (field) => field && field.toLowerCase().includes(value)
+      );
+    };
+
+    setFilteredDealers(dealers.filter(filterAddress));
+    setFilteredContractors(contractors.filter(filterAddress));
   };
 
   return (
     <div className="landing-container">
+      {/* Hero Section */}
       <section className="hero">
         <div className="hero-content">
           <h1>Find Your Dream Property</h1>
           <p>Explore properties listed by dealers and contractors.</p>
+          <div className="search-bar">
+            <input
+              type="text"
+              placeholder="Search by address..."
+              value={searchTerm}
+              onChange={handleSearch}
+            />
+            <button type="submit">Search</button>
+          </div>
         </div>
       </section>
 
       {/* Dealers Section */}
       <section id="dealers" className="section">
-  <h2>Property Dealers</h2>
-  {dealers.length ? (
-    <div className="card-grid">
-      {dealers.map((dealer) => (
-        <div
-          key={dealer.id}
-          className="property-card"
-          onClick={() => handleNavigate("dealer", dealer.id)}
-        >
-          <img
-            src={dealer.avatar || " "}
-            alt={dealer.name}
-            onError={(e) => (e.target.src = " ")}
-          />
-          <h3>{dealer.name}</h3>
-          <p>{dealer.description || "No description available"}</p>
-          <div className="product-ratings-left">
-            <div className="reviews">
-              <h4>Reviews:</h4>
-            </div>
-            <span className="stars">
-              <StarFilled />
-              <StarFilled />
-              <StarFilled />
-              <StarFilled />
-              <StarTwoTone twoToneColor="#fadb14" />
-            </span>
+        <h2>Property Dealers</h2>
+        <hr />
+        {filteredDealers.length ? (
+          <div className="card-grid">
+            {filteredDealers.map((dealer) => (
+              <div
+                key={dealer.id}
+                className="property-card"
+                onClick={() => handleNavigate("dealer", dealer.id)}
+              >
+                <img
+                  src={dealer.avatar || " "}
+                  alt={dealer.name}
+                  onError={(e) => (e.target.src = " ")}
+                />
+                <h3>{dealer.name}</h3>
+                <p>{dealer.description || "No description available"}</p>
+                <div className="product-ratings-left">
+                  <div className="reviews">
+                    <h4 style={{ fontWeight: "bold" }}>Reviews:</h4>
+                  </div>
+                  <span className="stars">
+                    <StarFilled />
+                    <StarFilled />
+                    <StarFilled />
+                    <StarFilled />
+                    <StarTwoTone twoToneColor="#fadb14" />
+                  </span>
+                </div>
+                <div style={{ textAlign: "left", fontWeight: "bold" }}>
+                  Total Listing: {dealer.listingCount}
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
-      ))}
-    </div>
-  ) : (
-    <p>No dealers found.</p>
-  )}
-</section>
-
+        ) : (
+          <p>No dealers found.</p>
+        )}
+      </section>
 
       {/* Contractors Section */}
       <section id="contractors" className="section">
-  <h2>Contractors</h2>
-  {contractors.length ? (
-    <div className="card-grid">
-      {contractors.map((contractor) => (
-        <div
-          key={contractor.id}
-          className="contractor-card"
-          onClick={() => handleNavigate("contractor", contractor.id)}
-        >
-          <img
-            src={contractor.avatar || " "}
-            alt={contractor.name}
-            onError={(e) => (e.target.src = " ")}
-          />
-          <h3>{contractor.name}</h3>
-          <p>{contractor.description || "No description available"}</p>
-          <div className="product-ratings-left">
-            <div className="reviews">
-              <h4>Reviews:</h4>
-            </div>
-            <span className="stars">
-              <StarFilled />
-              <StarFilled />
-              <StarFilled />
-              <StarFilled />
-              <StarTwoTone twoToneColor="#fadb14" />
-            </span>
+        <h2>Contractors</h2>
+        <hr />
+        {filteredContractors.length ? (
+          <div className="card-grid">
+            {filteredContractors.map((contractor) => (
+              <div
+                key={contractor.id}
+                className="contractor-card"
+                onClick={() => handleNavigate("contractor", contractor.id)}
+              >
+                <img
+                  src={contractor.avatar || " "}
+                  alt={contractor.name}
+                  onError={(e) => (e.target.src = " ")}
+                />
+                <h3>{contractor.name}</h3>
+                <p>{contractor.description || "No description available"}</p>
+                <div className="product-ratings-left">
+                  <div className="reviews">
+                    <h4>Reviews:</h4>
+                  </div>
+                  <span className="stars">
+                    <StarFilled />
+                    <StarFilled />
+                    <StarFilled />
+                    <StarFilled />
+                    <StarTwoTone twoToneColor="#fadb14" />
+                  </span>
+                </div>
+                <div style={{ textAlign: "left", fontWeight: "bold" }}>
+                  Total Listing: {contractor.listingCount}
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
-      ))}
-    </div>
-  ) : (
-    <p>No contractors found.</p>
-  )}
-</section>
-
+        ) : (
+          <p>No contractors found.</p>
+        )}
+      </section>
 
       {/* Contact Us Section */}
       <section id="contact" className="contact-section">

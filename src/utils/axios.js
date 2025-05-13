@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Base URL from environment variables
-const baseURL = process.env.REACT_APP_API_URL; // Make sure your .env file is correctly set
+const baseURL = "http://localhost:5000/v1";
 
 // Create instances with consistent base URLs for each service
 const register = axios.create({
