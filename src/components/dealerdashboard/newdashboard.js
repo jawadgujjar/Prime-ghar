@@ -23,31 +23,79 @@ import {
 const NewDashboard = () => {
   const navigate = useNavigate();
   const [dealer, setDealer] = useState(null);
+  const [editableDealer, setEditableDealer] = useState({});
   const [propertiesList, setPropertiesList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [editMode, setEditMode] = useState(false);
 
-  // ✅ Delete handler without restriction
   const handleDelete = async (propertyId) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this property?");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this property?"
+    );
     if (!confirmDelete) return;
-  
+
     const token = localStorage.getItem("token");
-  
+
     try {
       await property.delete(`/${propertyId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       setPropertiesList((prev) => prev.filter((p) => p.id !== propertyId));
     } catch (err) {
       alert("Failed to delete property. Please authenticate.");
       console.error(err);
     }
   };
-  
+
+  const handleUpdate = async () => {
+    const token = localStorage.getItem("token");
+    
+    // Only send fields that have changed
+    const changes = {};
+    Object.keys(editableDealer).forEach(key => {
+      if (editableDealer[key] !== dealer[key]) {
+        changes[key] = editableDealer[key];
+      }
+    });
+
+    if (Object.keys(changes).length === 0) {
+      setEditMode(false);
+      return;
+    }
+
+    try {
+      const response = await users.patch(`/${dealer.id}`, changes, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setDealer(response.data);
+      localStorage.clear();
+      window.location.reload();
+      setEditMode(false);
+    } catch (err) {
+      alert("Failed to update profile.");
+      console.error(err);
+    }
+  };
+
+  const handleEditChange = (field, value) => {
+    // Only update the editableDealer if the value is different from original
+    if (value !== dealer[field]) {
+      setEditableDealer(prev => ({ ...prev, [field]: value }));
+    } else {
+      // If value matches original, remove it from editableDealer
+      setEditableDealer(prev => {
+        const newEditable = { ...prev };
+        delete newEditable[field];
+        return newEditable;
+      });
+    }
+  };
 
   useEffect(() => {
     const fetchDealerDetails = async () => {
@@ -87,21 +135,84 @@ const NewDashboard = () => {
       <Row className="align-items-center bg-white shadow p-4 rounded mb-4">
         <Col md={3} className="text-center">
           <Image
-            src={dealer.avatar || "/default-avatar.jpg"}
+            src={
+              editMode && editableDealer.avatar 
+                ? editableDealer.avatar 
+                : dealer.avatar || "/default-avatar.jpg"
+            }
             fluid
-            className="rounded-circle border border-warning"
-            style={{ width: "150px", height: "150px" }}
+            className="rounded-circle border border-warning mb-2"
+            style={{ width: "150px", height: "150px", objectFit: "cover" }}
           />
+          {editMode && (
+            <input
+              type="text"
+              className="form-control mt-2"
+              placeholder="Image URL"
+              value={editableDealer.avatar || dealer.avatar || ""}
+              onChange={(e) => handleEditChange('avatar', e.target.value)}
+            />
+          )}
         </Col>
+
         <Col md={9}>
-          <h2 className="fw-bold text-primary">{dealer.name}</h2>
-          <p>
-            <FaEnvelope className="me-2 text-secondary" /> {dealer.email}
-          </p>
-          <p>
-            <FaPhone className="me-2 text-secondary" /> +{dealer.phoneNumber}
-          </p>
-          <p className="fw-bold text-muted">{dealer.role?.toUpperCase()}</p>
+          {editMode ? (
+            <>
+              <input
+                type="text"
+                className="form-control mb-2"
+                placeholder="Name"
+                value={editableDealer.name || dealer.name || ""}
+                onChange={(e) => handleEditChange('name', e.target.value)}
+              />
+              <input
+                type="email"
+                className="form-control mb-2"
+                placeholder="Email"
+                value={editableDealer.email || dealer.email || ""}
+                onChange={(e) => handleEditChange('email', e.target.value)}
+              />
+              <input
+                type="text"
+                className="form-control mb-2"
+                placeholder="Phone Number"
+                value={editableDealer.phoneNumber || dealer.phoneNumber || ""}
+                onChange={(e) => handleEditChange('phoneNumber', e.target.value)}
+              />
+              <Button variant="success" size="sm" onClick={handleUpdate}>
+                Save
+              </Button>{" "}
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => setEditMode(false)}
+              >
+                Cancel
+              </Button>
+            </>
+          ) : (
+            <>
+              <h2 className="fw-bold text-primary">{dealer.name}</h2>
+              <p>
+                <FaEnvelope className="me-2 text-secondary" /> {dealer.email}
+              </p>
+              <p>
+                <FaPhone className="me-2 text-secondary" /> +
+                {dealer.phoneNumber}
+              </p>
+              <p className="fw-bold text-muted">{dealer.role?.toUpperCase()}</p>
+              <Button
+                variant="outline-warning"
+                size="sm"
+                onClick={() => {
+                  setEditMode(true);
+                  setEditableDealer({});
+                }}
+              >
+                Edit Profile
+              </Button>
+            </>
+          )}
         </Col>
       </Row>
 
@@ -130,7 +241,9 @@ const NewDashboard = () => {
         </Col>
         <Col className="text-end">
           <Button variant="primary" onClick={() => navigate("/add-property")}>
-            {dealer.role === "contractor" ? "+ Add Portfolio" : "+ Add Property"}
+            {dealer.role === "contractor"
+              ? "+ Add Portfolio"
+              : "+ Add Property"}
           </Button>
         </Col>
       </Row>
